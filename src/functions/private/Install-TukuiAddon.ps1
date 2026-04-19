@@ -14,7 +14,7 @@
 
         Downloads and installs ElvUI to the specified AddOns directory.
     #>
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding()]
     param(
         # The full path to the WoW AddOns directory.
         [Parameter(Mandatory)]
@@ -25,7 +25,7 @@
         [PSCustomObject] $Addon
     )
 
-    $tempDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "Tukui_$($Addon.Slug)_Update"
+    $tempDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "Tukui_$($Addon.Slug)_Update_$([guid]::NewGuid().ToString('N'))"
     try {
         if (Test-Path $tempDir) {
             Remove-Item $tempDir -Recurse -Force
@@ -35,7 +35,7 @@
         # Download
         $zipPath = Join-Path -Path $tempDir -ChildPath "$($Addon.Slug)-$($Addon.Version).zip"
         Write-Verbose "Downloading $($Addon.Name) $($Addon.Version) ..."
-        Invoke-WebRequest -Uri $Addon.DownloadUrl -OutFile $zipPath -UseBasicParsing
+        Invoke-WebRequest -Uri $Addon.DownloadUrl -OutFile $zipPath
 
         # Extract
         $extractPath = Join-Path -Path $tempDir -ChildPath 'extracted'

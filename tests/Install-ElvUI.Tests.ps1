@@ -19,4 +19,7 @@ Describe 'Install-ElvUI' {
     It 'Should have Flavor parameter' {
         (Get-Command Install-ElvUI).Parameters.ContainsKey('Flavor') | Should -BeTrue
     }
+    It 'Should throw when WoW path does not exist' {
+        { Install-ElvUI -WoWPath 'TestDrive:\NonExistent' } | Should -Throw
+    }
 }

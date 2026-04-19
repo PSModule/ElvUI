@@ -35,7 +35,7 @@
         $url = 'https://api.tukui.org/v1/addons'
     }
 
-    $response = Invoke-RestMethod -Uri $url -UseBasicParsing
+    $response = Invoke-RestMethod -Uri $url
 
     foreach ($addon in @($response)) {
         [PSCustomObject]@{

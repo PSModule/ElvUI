@@ -22,4 +22,7 @@ Describe 'Update-ElvUI' {
     It 'Should have Force parameter' {
         (Get-Command Update-ElvUI).Parameters.ContainsKey('Force') | Should -BeTrue
     }
+    It 'Should throw when WoW path does not exist' {
+        { Update-ElvUI -WoWPath 'TestDrive:\NonExistent' } | Should -Throw
+    }
 }
