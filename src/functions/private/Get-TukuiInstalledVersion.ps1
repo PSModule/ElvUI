@@ -33,8 +33,8 @@
     }
 
     $tocCandidates = @(
-        (Join-Path $AddOnsPath $addonFolder "${addonFolder}_Mainline.toc")
-        (Join-Path $AddOnsPath $addonFolder "$addonFolder.toc")
+        (Join-Path -Path $AddOnsPath -ChildPath $addonFolder | Join-Path -ChildPath "${addonFolder}_Mainline.toc")
+        (Join-Path -Path $AddOnsPath -ChildPath $addonFolder | Join-Path -ChildPath "$addonFolder.toc")
     )
 
     $tocPath = $tocCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1

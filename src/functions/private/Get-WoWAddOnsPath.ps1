@@ -32,7 +32,7 @@
         [string] $Flavor = '_retail_'
     )
 
-    $addOnsPath = Join-Path $WoWPath $Flavor 'Interface' 'AddOns'
+    $addOnsPath = Join-Path -Path $WoWPath -ChildPath $Flavor | Join-Path -ChildPath 'Interface' | Join-Path -ChildPath 'AddOns'
     if (-not (Test-Path $addOnsPath)) {
         throw "AddOns folder not found: $addOnsPath"
     }

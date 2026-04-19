@@ -23,7 +23,7 @@
 
         Installs ElvUI to the Classic WoW AddOns folder.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         # Path to the World of Warcraft installation folder.
         [Parameter()]
@@ -38,6 +38,8 @@
     $addOnsPath = Get-WoWAddOnsPath -WoWPath $WoWPath -Flavor $Flavor
     $addon = Get-TukuiAddon -Name elvui
 
-    Write-Host "Installing $($addon.Name) $($addon.Version) ..." -ForegroundColor Cyan
-    Install-TukuiAddon -AddOnsPath $addOnsPath -Addon $addon
+    if ($PSCmdlet.ShouldProcess($addOnsPath, "Install $($addon.Name) $($addon.Version)")) {
+        Write-Verbose "Installing $($addon.Name) $($addon.Version) ..."
+        Install-TukuiAddon -AddOnsPath $addOnsPath -Addon $addon
+    }
 }

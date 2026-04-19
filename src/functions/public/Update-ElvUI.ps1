@@ -28,7 +28,7 @@
 
         Reinstalls ElvUI even if the installed version matches the latest.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         # Path to the World of Warcraft installation folder.
         [Parameter()]
@@ -48,24 +48,26 @@
     $installedVersion = Get-TukuiInstalledVersion -AddOnsPath $addOnsPath -Name elvui
 
     if ($installedVersion) {
-        Write-Host "Installed version: $installedVersion" -ForegroundColor Cyan
+        Write-Verbose "Installed version: $installedVersion"
     } else {
-        Write-Host 'No existing ElvUI installation detected. Installing fresh.' -ForegroundColor Yellow
+        Write-Verbose 'No existing ElvUI installation detected. Installing fresh.'
     }
 
     $addon = Get-TukuiAddon -Name elvui
-    Write-Host "Latest ElvUI version: $($addon.Version)" -ForegroundColor Green
+    Write-Verbose "Latest ElvUI version: $($addon.Version)"
 
     if ($installedVersion -eq $addon.Version -and -not $Force) {
-        Write-Host 'ElvUI is already up to date. Use -Force to reinstall.' -ForegroundColor Green
+        Write-Verbose 'ElvUI is already up to date. Use -Force to reinstall.'
         return
     }
 
     if ($installedVersion -eq $addon.Version) {
-        Write-Host "Forcing reinstall of $($addon.Version) ..." -ForegroundColor Yellow
+        Write-Verbose "Forcing reinstall of $($addon.Version) ..."
     } elseif ($installedVersion) {
-        Write-Host "Updating from $installedVersion to $($addon.Version) ..." -ForegroundColor Yellow
+        Write-Verbose "Updating from $installedVersion to $($addon.Version) ..."
     }
 
-    Install-TukuiAddon -AddOnsPath $addOnsPath -Addon $addon
+    if ($PSCmdlet.ShouldProcess($addOnsPath, "Install $($addon.Name) $($addon.Version)")) {
+        Install-TukuiAddon -AddOnsPath $addOnsPath -Addon $addon
+    }
 }

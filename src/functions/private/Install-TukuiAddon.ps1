@@ -14,7 +14,7 @@
 
         Downloads and installs ElvUI to the specified AddOns directory.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         # The full path to the WoW AddOns directory.
         [Parameter(Mandatory)]
@@ -25,7 +25,7 @@
         [PSCustomObject] $Addon
     )
 
-    $tempDir = Join-Path ([System.IO.Path]::GetTempPath()) "Tukui_$($Addon.Slug)_Update"
+    $tempDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "Tukui_$($Addon.Slug)_Update"
     try {
         if (Test-Path $tempDir) {
             Remove-Item $tempDir -Recurse -Force
@@ -33,20 +33,20 @@
         New-Item -ItemType Directory -Path $tempDir | Out-Null
 
         # Download
-        $zipPath = Join-Path $tempDir "$($Addon.Slug)-$($Addon.Version).zip"
-        Write-Host "Downloading $($Addon.Name) $($Addon.Version) ..." -ForegroundColor Cyan
+        $zipPath = Join-Path -Path $tempDir -ChildPath "$($Addon.Slug)-$($Addon.Version).zip"
+        Write-Verbose "Downloading $($Addon.Name) $($Addon.Version) ..."
         Invoke-WebRequest -Uri $Addon.DownloadUrl -OutFile $zipPath -UseBasicParsing
 
         # Extract
-        $extractPath = Join-Path $tempDir 'extracted'
-        Write-Host 'Extracting...' -ForegroundColor Cyan
+        $extractPath = Join-Path -Path $tempDir -ChildPath 'extracted'
+        Write-Verbose 'Extracting...'
         Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
 
         # Remove old addon folders matching the known directory names
         foreach ($dir in $Addon.Directories) {
-            $oldPath = Join-Path $AddOnsPath $dir
+            $oldPath = Join-Path -Path $AddOnsPath -ChildPath $dir
             if (Test-Path $oldPath) {
-                Write-Host "  Removing $dir" -ForegroundColor Yellow
+                Write-Verbose "  Removing $dir"
                 Remove-Item $oldPath -Recurse -Force
             }
         }
@@ -54,12 +54,12 @@
         # Copy new folders
         $extractedFolders = Get-ChildItem -Path $extractPath -Directory
         foreach ($folder in $extractedFolders) {
-            $destination = Join-Path $AddOnsPath $folder.Name
-            Write-Host "  Installing $($folder.Name)" -ForegroundColor Cyan
+            $destination = Join-Path -Path $AddOnsPath -ChildPath $folder.Name
+            Write-Verbose "  Installing $($folder.Name)"
             Copy-Item -Path $folder.FullName -Destination $destination -Recurse -Force
         }
 
-        Write-Host "$($Addon.Name) $($Addon.Version) installed successfully!" -ForegroundColor Green
+        Write-Verbose "$($Addon.Name) $($Addon.Version) installed successfully!"
     } finally {
         if (Test-Path $tempDir) {
             Remove-Item $tempDir -Recurse -Force
