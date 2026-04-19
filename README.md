@@ -1,53 +1,55 @@
-# {{ NAME }}
+# ElvUI
 
-{{ DESCRIPTION }}
+A PowerShell module for installing and updating the [ElvUI](https://www.tukui.org/elvui) addon
+for [World of Warcraft](https://worldofwarcraft.blizzard.com/).
 
 ## Prerequisites
 
-This uses the following external resources:
+- Windows PowerShell 5.1 or PowerShell 7+
+- A World of Warcraft installation
 - The [PSModule framework](https://github.com/PSModule/Process-PSModule) for building, testing and publishing the module.
 
 ## Installation
 
-To install the module from the PowerShell Gallery, you can use the following command:
+To install the module from the PowerShell Gallery:
 
 ```powershell
-Install-PSResource -Name {{ NAME }}
-Import-Module -Name {{ NAME }}
+Install-PSResource -Name ElvUI
+Import-Module -Name ElvUI
 ```
 
 ## Usage
 
-Here is a list of example that are typical use cases for the module.
-
-### Example 1: Greet an entity
-
-Provide examples for typical commands that a user would like to do with the module.
+### Update ElvUI to the latest version
 
 ```powershell
-Greet-Entity -Name 'World'
-Hello, World!
+Update-ElvUI
 ```
 
-### Example 2
-
-Provide examples for typical commands that a user would like to do with the module.
+### Force reinstall even if already up to date
 
 ```powershell
-Import-Module -Name PSModuleTemplate
+Update-ElvUI -Force
+```
+
+### Install ElvUI fresh
+
+```powershell
+Install-ElvUI
+```
+
+### Target a different WoW installation or flavor
+
+```powershell
+Update-ElvUI -WoWPath 'D:\Games\World of Warcraft' -Flavor '_classic_'
 ```
 
 ### Find more examples
 
 To find more examples of how to use the module, please refer to the [examples](examples) folder.
 
-Alternatively, you can use the Get-Command -Module 'This module' to find more commands that are available in the module.
-To find examples of each of the commands you can use Get-Help -Examples 'CommandName'.
-
-## Documentation
-
-Link to further documentation if available, or describe where in the repository users can find more detailed documentation about
-the module's functions and features.
+You can also use `Get-Command -Module ElvUI` to list available commands,
+and `Get-Help -Examples <CommandName>` to see usage examples for each.
 
 ## Contributing
 
@@ -63,7 +65,3 @@ Please see the issues tab on this project and submit a new issue that matches yo
 
 If you do code, we'd love to have your contributions. Please read the [Contribution guidelines](CONTRIBUTING.md) for more information.
 You can either help by picking up an existing issue or submit a new one if you have an idea for a new feature or improvement.
-
-## Acknowledgements
-
-Here is a list of people and projects that helped this project in some way.
