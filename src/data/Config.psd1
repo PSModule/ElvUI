@@ -1,3 +1,2 @@
 ﻿@{
-    RandomKey = 'RandomValue'
 }
