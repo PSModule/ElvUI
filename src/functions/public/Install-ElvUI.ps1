@@ -4,7 +4,7 @@
         Downloads and installs ElvUI to the WoW AddOns folder.
 
         .DESCRIPTION
-        Fetches the latest ElvUI release from the Tukui API, downloads the zip archive,
+        Fetches the latest ElvUI release from the Tukui API, downloads the ZIP archive,
         and installs it to the World of Warcraft AddOns directory. Any existing ElvUI
         folders are removed before the new version is copied into place.
 

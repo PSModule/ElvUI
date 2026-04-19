@@ -4,7 +4,7 @@
         Downloads and installs a Tukui addon to the WoW AddOns folder.
 
         .DESCRIPTION
-        Downloads the zip from the Tukui API, extracts it, removes old addon
+        Downloads the ZIP archive from the Tukui API, extracts it, removes old addon
         folders, and copies the new ones into place. Uses a temporary directory
         that is cleaned up automatically.
 
@@ -30,7 +30,7 @@
         if (Test-Path $tempDir) {
             Remove-Item $tempDir -Recurse -Force
         }
-        New-Item -ItemType Directory -Path $tempDir | Out-Null
+        $null = New-Item -ItemType Directory -Path $tempDir
 
         # Download
         $zipPath = Join-Path -Path $tempDir -ChildPath "$($Addon.Slug)-$($Addon.Version).zip"
