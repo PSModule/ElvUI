@@ -14,7 +14,12 @@ for [World of Warcraft](https://worldofwarcraft.blizzard.com/).
 To install the module from the PowerShell Gallery:
 
 ```powershell
+# PowerShell 7.4+ (Install-PSResource is built-in)
 Install-PSResource -Name ElvUI
+Import-Module -Name ElvUI
+
+# Windows PowerShell 5.1 (use Install-Module instead)
+Install-Module -Name ElvUI -Scope CurrentUser
 Import-Module -Name ElvUI
 ```
 

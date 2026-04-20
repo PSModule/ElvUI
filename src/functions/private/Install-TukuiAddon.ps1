@@ -64,17 +64,17 @@
         }
 
         # Copy new folders
-        $extractedFolders = Get-ChildItem -Path $extractPath -Directory -ErrorAction Stop
+        $extractedFolders = Get-ChildItem -LiteralPath $extractPath -Directory -ErrorAction Stop
         foreach ($folder in $extractedFolders) {
             $destination = Join-Path -Path $AddOnsPath -ChildPath $folder.Name
             Write-Verbose "  Installing $($folder.Name)"
-            Copy-Item -Path $folder.FullName -Destination $destination -Recurse -Force -ErrorAction Stop
+            Copy-Item -LiteralPath $folder.FullName -Destination $destination -Recurse -Force -ErrorAction Stop
         }
 
         Write-Verbose "$($Addon.Name) $($Addon.Version) installed successfully!"
     } finally {
-        if (Test-Path $tempDir) {
-            Remove-Item $tempDir -Recurse -Force
+        if (Test-Path -LiteralPath $tempDir) {
+            Remove-Item -LiteralPath $tempDir -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
 }
