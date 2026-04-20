@@ -1,19 +1,19 @@
 ﻿<#
-  .SYNOPSIS
-    This is a general example of how to use the module.
+    .SYNOPSIS
+    Examples of how to use the ElvUI module.
 #>
 
 # Import the module
-Import-Module -Name 'PSModule'
+Import-Module -Name ElvUI
 
-# Define the path to the font file
-$FontFilePath = 'C:\Fonts\CodeNewRoman\CodeNewRomanNerdFontPropo-Regular.tff'
+# Update ElvUI to the latest version
+Update-ElvUI
 
-# Install the font
-Install-Font -Path $FontFilePath -Verbose
+# Force reinstall even if already up to date
+Update-ElvUI -Force
 
-# List installed fonts
-Get-Font -Name 'CodeNewRomanNerdFontPropo-Regular'
+# Install ElvUI fresh
+Install-ElvUI
 
-# Uninstall the font
-Get-Font -Name 'CodeNewRomanNerdFontPropo-Regular' | Uninstall-Font -Verbose
+# Target a specific WoW installation and game flavor
+Update-ElvUI -WoWPath 'D:\Games\World of Warcraft' -Flavor '_classic_'
