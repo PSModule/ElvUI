@@ -59,12 +59,12 @@
     # Compare versions to prevent unintentional downgrades
     $installedVer = $null
     $latestVer = $null
-    $canCompareVersions = $installedVersion -and
-        [version]::TryParse($installedVersion, [ref]$installedVer) -and
-        [version]::TryParse($addon.Version, [ref]$latestVer)
+    $canParseInstalled = [version]::TryParse($installedVersion, [ref]$installedVer)
+    $canParseLatest = [version]::TryParse($addon.Version, [ref]$latestVer)
+    $canCompareVersions = $installedVersion -and $canParseInstalled -and $canParseLatest
 
     if ($canCompareVersions -and $installedVer -gt $latestVer -and -not $Force) {
-        Write-Verbose "Installed version ($installedVersion) is newer than the latest available ($($addon.Version)). Use -Force to reinstall."
+        Write-Verbose "Installed version ($installedVersion) is newer than latest ($($addon.Version)). Use -Force to reinstall."
         return
     }
 
@@ -73,10 +73,19 @@
         return
     }
 
+    if (-not $canCompareVersions -and $installedVersion -and -not $Force) {
+        $msg = "Cannot compare version formats (installed: '$installedVersion',"
+        $msg += " latest: '$($addon.Version)'). Use -Force to proceed."
+        Write-Verbose $msg
+        return
+    }
+
     if ($installedVersion -eq $addon.Version) {
         Write-Verbose "Forcing reinstall of $($addon.Version) ..."
     } elseif ($canCompareVersions -and $installedVer -gt $latestVer) {
-        Write-Verbose "Forcing reinstall — installed version ($installedVersion) is newer than latest available ($($addon.Version))."
+        Write-Verbose "Forcing reinstall — installed ($installedVersion) is newer than latest ($($addon.Version))."
+    } elseif (-not $canCompareVersions -and $installedVersion) {
+        Write-Verbose "Forcing install — cannot compare versions (installed: '$installedVersion')."
     } elseif ($installedVersion) {
         Write-Verbose "Updating from $installedVersion to $($addon.Version) ..."
     }

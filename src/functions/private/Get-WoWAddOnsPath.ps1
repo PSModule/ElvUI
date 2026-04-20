@@ -33,7 +33,7 @@
     )
 
     $addOnsPath = Join-Path -Path $WoWPath -ChildPath $Flavor | Join-Path -ChildPath 'Interface' | Join-Path -ChildPath 'AddOns'
-    if (-not (Test-Path $addOnsPath)) {
+    if (-not (Test-Path -LiteralPath $addOnsPath)) {
         throw "AddOns folder not found: $addOnsPath"
     }
     $addOnsPath

@@ -44,7 +44,8 @@
 
         # Remove old addon folders matching the known directory names
         $normalizedAddOnsPath = [System.IO.Path]::GetFullPath($AddOnsPath)
-        $normalizedAddOnsPath = $normalizedAddOnsPath.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+        $trimChars = @([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+        $normalizedAddOnsPath = $normalizedAddOnsPath.TrimEnd($trimChars) + [System.IO.Path]::DirectorySeparatorChar
         foreach ($dir in $Addon.Directories) {
             if ([string]::IsNullOrWhiteSpace($dir) -or $dir.Contains('\') -or $dir.Contains('/') -or $dir.Contains('..')) {
                 throw "Invalid addon directory entry '$dir' returned by API."

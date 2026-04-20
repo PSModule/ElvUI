@@ -37,12 +37,12 @@
         (Join-Path -Path $AddOnsPath -ChildPath $addonFolder | Join-Path -ChildPath "$addonFolder.toc")
     )
 
-    $tocPath = $tocCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+    $tocPath = $tocCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
     if (-not $tocPath) {
         return $null
     }
 
-    $tocContent = Get-Content -Path $tocPath -Raw
+    $tocContent = Get-Content -LiteralPath $tocPath -Raw -ErrorAction Stop
     if ($tocContent -match '(?m)^## Version:\s*(.+)$') {
         return $Matches[1].Trim().TrimStart('v')
     }
