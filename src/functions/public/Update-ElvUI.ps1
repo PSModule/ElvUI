@@ -56,6 +56,18 @@
     $addon = Get-TukuiAddon -Name elvui
     Write-Verbose "Latest ElvUI version: $($addon.Version)"
 
+    # Compare versions to prevent unintentional downgrades
+    $installedVer = $null
+    $latestVer = $null
+    $canCompareVersions = $installedVersion -and
+        [version]::TryParse($installedVersion, [ref]$installedVer) -and
+        [version]::TryParse($addon.Version, [ref]$latestVer)
+
+    if ($canCompareVersions -and $installedVer -gt $latestVer -and -not $Force) {
+        Write-Verbose "Installed version ($installedVersion) is newer than the latest available ($($addon.Version)). Use -Force to reinstall."
+        return
+    }
+
     if ($installedVersion -eq $addon.Version -and -not $Force) {
         Write-Verbose 'ElvUI is already up to date. Use -Force to reinstall.'
         return
@@ -63,6 +75,8 @@
 
     if ($installedVersion -eq $addon.Version) {
         Write-Verbose "Forcing reinstall of $($addon.Version) ..."
+    } elseif ($canCompareVersions -and $installedVer -gt $latestVer) {
+        Write-Verbose "Forcing reinstall — installed version ($installedVersion) is newer than latest available ($($addon.Version))."
     } elseif ($installedVersion) {
         Write-Verbose "Updating from $installedVersion to $($addon.Version) ..."
     }

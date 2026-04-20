@@ -28,35 +28,46 @@
     $tempDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "Tukui_$($Addon.Slug)_Update_$([guid]::NewGuid().ToString('N'))"
     try {
         if (Test-Path $tempDir) {
-            Remove-Item $tempDir -Recurse -Force
+            Remove-Item $tempDir -Recurse -Force -ErrorAction Stop
         }
-        $null = New-Item -ItemType Directory -Path $tempDir
+        $null = New-Item -ItemType Directory -Path $tempDir -ErrorAction Stop
 
         # Download
         $zipPath = Join-Path -Path $tempDir -ChildPath "$($Addon.Slug)-$($Addon.Version).zip"
         Write-Verbose "Downloading $($Addon.Name) $($Addon.Version) ..."
-        Invoke-WebRequest -Uri $Addon.DownloadUrl -OutFile $zipPath
+        Invoke-WebRequest -Uri $Addon.DownloadUrl -OutFile $zipPath -ErrorAction Stop
 
         # Extract
         $extractPath = Join-Path -Path $tempDir -ChildPath 'extracted'
         Write-Verbose 'Extracting...'
-        Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+        Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force -ErrorAction Stop
 
         # Remove old addon folders matching the known directory names
+        $normalizedAddOnsPath = [System.IO.Path]::GetFullPath($AddOnsPath)
+        $normalizedAddOnsPath = $normalizedAddOnsPath.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
         foreach ($dir in $Addon.Directories) {
+            if ([string]::IsNullOrWhiteSpace($dir) -or $dir.Contains('\') -or $dir.Contains('/') -or $dir.Contains('..')) {
+                throw "Invalid addon directory entry '$dir' returned by API."
+            }
+
             $oldPath = Join-Path -Path $AddOnsPath -ChildPath $dir
-            if (Test-Path $oldPath) {
+            $resolvedOldPath = [System.IO.Path]::GetFullPath($oldPath)
+            if (-not $resolvedOldPath.StartsWith($normalizedAddOnsPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+                throw "Resolved addon directory path '$resolvedOldPath' is outside the AddOns directory."
+            }
+
+            if (Test-Path -LiteralPath $resolvedOldPath) {
                 Write-Verbose "  Removing $dir"
-                Remove-Item $oldPath -Recurse -Force
+                Remove-Item -LiteralPath $resolvedOldPath -Recurse -Force -ErrorAction Stop
             }
         }
 
         # Copy new folders
-        $extractedFolders = Get-ChildItem -Path $extractPath -Directory
+        $extractedFolders = Get-ChildItem -Path $extractPath -Directory -ErrorAction Stop
         foreach ($folder in $extractedFolders) {
             $destination = Join-Path -Path $AddOnsPath -ChildPath $folder.Name
             Write-Verbose "  Installing $($folder.Name)"
-            Copy-Item -Path $folder.FullName -Destination $destination -Recurse -Force
+            Copy-Item -Path $folder.FullName -Destination $destination -Recurse -Force -ErrorAction Stop
         }
 
         Write-Verbose "$($Addon.Name) $($Addon.Version) installed successfully!"
